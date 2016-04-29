@@ -1,0 +1,90 @@
+<div class="container">
+  <div class="row" style="padding-bottom: 15px">
+    <div class="col-lg-6">
+      <form name="myForm">
+        <label for="selectedProject">Project:</label>
+        <select name="selectedProject" id="selectedProject"
+                ng-options="project.fields.name for project in projects track by project.pk"
+                ng-model="selectedProject" ng-change="selectProject(selectedProject)"></select>
+      </form>
+    </div>
+    <div class="col-lg-3">
+      <button ng-show="!isCapturingImages" class="btn btn-success" ng-click="startImageCapture()">Start Image Capture</button>
+      <button ng-show="isCapturingImages" class="btn btn-danger" ng-click="stopImageCapture()">Stop Image Capture</button>
+    </div>
+    <div class="col-lg-3">
+      <button ng-show="!isEvaluatingImages" class="btn btn-success" ng-click="startImageEval()">Start Image Eval</button>
+      <button ng-show="isEvaluatingImages" class="btn btn-danger" ng-click="stopImageEval()">Stop Image Eval</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-5">
+      <div class="panel panel-default">
+        <div class="panel-heading">Training Regions</div>
+        <div class="panel-body">
+          <div ng-repeat="trainingRegion in trainingRegions">
+            <div style="font-weight: bold">{{trainingRegion.fields.name}}</div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="row">
+                  <div class="col-lg-6">
+                    x
+                    <input class="form-control" type="text" ng-model="trainingRegion.fields.x">
+                  </div>
+                  <div class="col-lg-6">
+                    y
+                    <input class="form-control" type="text" ng-model="trainingRegion.fields.y">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    width
+                    <input class="form-control" type="text" ng-model="trainingRegion.fields.width" disabled>
+                  </div>
+                  <div class="col-lg-6">
+                    height
+                    <input class="form-control" type="text" ng-model="trainingRegion.fields.height" disabled>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    model ID
+                    <input class="form-control" type="text" ng-model="trainingRegion.fields.vision_model" disabled>
+                  </div>
+                  <div class="col-lg-6">
+                    class
+                    <input class="form-control" type="text" ng-model="trainingRegion.selectedClass" >
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    Threshold
+                    <input class="form-control" type="text" ng-model="trainingThreshold">
+                  </div>
+                  <div class="col-lg-6">
+                    Last Threshold: {{lastThreshold}}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <h4>Chance of 0: {{evalResult.predicted_class[0] * 100 | number:0}}%</h4>
+                    <h4>Chance of 1: {{evalResult.predicted_class[1] * 100 | number:0}}%</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <canvas style="width: 100%; padding-top: 5px"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-7">
+      <webcam
+        on-stream="onStream(stream)"
+        on-streaming="onSuccess()"
+        on-error="onError(err)"
+        channel="myChannel">
+      </webcam>
+    </div>
+  </div>
+</div>

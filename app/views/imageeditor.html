@@ -1,0 +1,78 @@
+<div class="container">
+  <div class="row" style="padding-bottom: 15px">
+    <div class="col-lg-6">
+      <form name="myForm">
+        <label for="selectedVisionModel">Vision Model:</label>
+        <select name="selectpicker" id="selectedVisionModel"
+                ng-options="visionModel.fields.name for visionModel in visionModels track by visionModel.pk"
+                ng-model="selectedVisionModel" ng-change="selectVisionModel(selectedVisionModel)"></select>
+        <label for="selectedVisionModel">Use Default Images:</label>
+        <input type="checkbox" ng-model="isDefaultImage" ng-change="defaultImagesClicked(isDefaultImage)">
+      </form>
+    </div>
+  </div>
+</div>
+<div class="container" ng-show="selectedVisionModel == undefined && isDefaultImage == false">
+  <div class="row">
+    <div class="col-lg-12">
+      <h3>Select a Vision Model</h3>
+    </div>
+  </div>
+</div>
+<div class="container" ng-show="selectedVisionModel != undefined || isDefaultImage == true">
+  <div class="row">
+    <div class="col-lg-12">
+      <h3>Edit Existing Images</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <form name="controls">
+        <div class="col-xs-4">
+          <label for="classToShow">Class to Show:</label>
+          <select ng-init="classToShow = 0"  name="classToShow" id="classToShow"
+                  ng-model="classToShow" ng-options="o.v as o.n for o in [{ n: 'Class 0', v: 0 }, { n: 'Class 1', v: 1 }, { n: 'Class 2', v: 2 }]">
+          </select>
+        </div>
+        <div class="col-xs-4">
+          <label for="isTestImage">Is Test Image:</label>
+          <select ng-init="isTestImage = false"  name="isTestImage" id="isTestImage"
+                  ng-model="isTestImage" ng-options="o.v as o.n for o in [{ n: 'False', v: false }, { n: 'True', v: true }]">
+          </select>
+        </div>
+        <div class="col-xs-4">
+          <label for="itemsPerPage">Items Per Page:</label>
+          <input ng-init="pageSize = 100" id="itemsPerPage" type="number" min="1" max="1000" class="form-control" ng-model="pageSize">
+        </div>
+        <label for="selectedVisionModel">Is Flagged Incorrect:</label>
+        <input type="checkbox" ng-model="isFlaggedIncorrect" ng-change="isFlaggedIncorrectClicked(selectedVisionModel, isFlaggedIncorrect)">
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <dir-pagination-controls pagination-id="imageList"></dir-pagination-controls>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div style="display: inline-block; margin: 5px;" dir-paginate="image in imageList | filter:imageListFilter(classToShow, isTestImage) | itemsPerPage: pageSize" pagination-id="imageList">
+        <img style="margin-bottom: 2px" ng-src="http://localhost:8000/PerchImages/images?pk={{image.pk}}">
+        <div style="margin-bottom: 2px">
+          <button ng-class="image.fields.is_test_image ? 'btn-primary' : 'btn-success'" ng-click="setIsTestImage(image, false)" class="btn">Train</button>
+          <button ng-class="!image.fields.is_test_image ? 'btn-primary' : 'btn-success'" ng-click="setIsTestImage(image, true)" class="btn btn-primary">Test</button>
+        </div>
+        <div style="margin-bottom: 2px">
+          <button ng-class="image.fields.image_class == 0 ? 'btn-danger' : 'btn-primary'" ng-click="setImageClass(image, 0)" class="btn">0</button>
+          <button ng-class="image.fields.image_class == 1 ? 'btn-danger' : 'btn-primary'" ng-click="setImageClass(image, 1)" class="btn">1</button>
+          <button ng-class="image.fields.image_class == 2 ? 'btn-danger' : 'btn-primary'" ng-click="setImageClass(image, 2)" class="btn">2</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <dir-pagination-controls pagination-id="imageList"></dir-pagination-controls>
+    </div>
+  </div>
+</div>

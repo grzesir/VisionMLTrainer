@@ -1,0 +1,12 @@
+<!--<input type="file" file-model="myFile"/>-->
+<button class="btn btn-default" ng-click="uploadFile()">upload me</button>
+
+<img ng-src="{{image_source}}">
+<input class="btn btn-primary" type="file" id="trigger" file-model="myFile" onchange="angular.element(this).scope().setFile(this)" accept="image/*">
+
+
+<div>evalResult: {{evalResult}}</div>
+
+
+
+
